@@ -2,6 +2,7 @@ resource world {
     static new: func() -> world
 
     add-component-to-entity: func(entity-id: u32, component: component)
+    register-system: func(system: system)
     update: func()
 }
 
@@ -10,13 +11,17 @@ resource entities {
     get-component: func(component-key: string, entity-id: u32) -> component
 
     // Get all components of a given type
-    get-components: func(component-key: string) -> list<component>
+    // get-components: func(component-key: string) -> list<component>
 
     // Get all entity ids that have all of the given components
     // get-entity-ids-all: func(component-keys: list<string>) -> list<u32>
 
     // Get all entity ids that have any of the given components
     // get-entity-ids-any: func(component-keys: list<string>) -> list<u32>
+}
+
+resource system {
+    update: func(entities: entities)
 }
 
 variant component {

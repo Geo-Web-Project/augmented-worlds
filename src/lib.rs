@@ -2,10 +2,13 @@ wai_bindgen_rust::export!("aw-core.wai");
 
 use std::cell::RefCell;
 use std::collections::HashMap;
+use wai_bindgen_rust::Handle;
+use aw_core::System;
 
 struct AwCore;
 struct World {
-    entities: Entities
+    entities: RefCell<Entities>,
+    systems: RefCell<Vec<Handle<dyn System>>>
 }
 struct Entities {
     component_managers: HashMap<String, ComponentManager>
@@ -15,14 +18,11 @@ struct ComponentManager {
     entity_ids: Vec<u32>,
     entity_id_map: HashMap<u32, usize>,
 }
-struct System {
-    update: fn(&Entities)
-}
 
 impl aw_core::AwCore for AwCore {}
 
 impl aw_core::World for World {
-    fn new() -> wai_bindgen_rust::Handle<World> {
+    fn new() -> Handle<World> {
         let mut component_managers = HashMap::new();
         component_managers.insert(String::from("position"), ComponentManager {
             components: Vec::new(),
@@ -35,10 +35,11 @@ impl aw_core::World for World {
             entity_id_map: HashMap::new(),
         });
 
-       wai_bindgen_rust::Handle::new(World {
-           entities: Entities{
+       Handle::new(World {
+           entities: RefCell::new(Entities{
                component_managers
-           }
+           }),
+           systems: RefCell::new(Vec::new())
        })
     }
 
@@ -46,18 +47,25 @@ impl aw_core::World for World {
         // Match each component type to a component manager
         match component {
             aw_core::Component::Position(position) => {
-                let component_manager = self.entities.component_managers.get_mut("position").unwrap();
+                let mut entities = self.entities.borrow_mut();
+                let component_manager = entities.component_managers.get_mut("position").unwrap();
                 component_manager.components.push(component);
                 component_manager.entity_ids.push(entity_id);
                 component_manager.entity_id_map.insert(entity_id, component_manager.components.len() - 1);
             },
             aw_core::Component::Scale(scale) => {
-                let component_manager = self.entities.component_managers.get_mut("scale").unwrap();
+                let mut entities = self.entities.borrow_mut();
+                let component_manager = entities.component_managers.get_mut("scale").unwrap();
                 component_manager.components.push(component);
                 component_manager.entity_ids.push(entity_id);
                 component_manager.entity_id_map.insert(entity_id, component_manager.components.len() - 1);
             },
         }
+    }
+
+    fn register_system(&self, system: Handle<dyn System>) {
+        let mut systems = self.systems.borrow_mut();
+        systems.push(system);
     }
 
     fn update(&self) {}
@@ -69,10 +77,10 @@ impl aw_core::Entities for Entities {
         let component_index = component_manager.entity_id_map.get(&entity_id).unwrap();
         component_manager.components[*component_index]
     }
-    fn get_components(&self, component_key: String) -> Vec<aw_core::Component> {
-        let component_manager = self.component_managers.get(&component_key).unwrap();
-        component_manager.components
-    }
+    // fn get_components(&self, component_key: String) -> Vec<aw_core::Component> {
+    //     let component_manager = self.component_managers.get(&component_key).unwrap();
+    //     component_manager.components
+    // }
     // fn get_entity_ids_all(&self, component_keys: Vec<String>) -> Vec<u32>;
     // fn get_entity_ids_any(&self, component_keys: Vec<String>) -> Vec<u32>;
 }
