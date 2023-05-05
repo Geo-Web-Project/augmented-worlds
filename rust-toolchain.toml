@@ -1,5 +1,5 @@
 [toolchain]
-channel = "stable"
+channel = "nightly"
 components = []
 targets = [ "wasm32-unknown-unknown" ]
 profile = "default"

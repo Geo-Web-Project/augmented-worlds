@@ -26,7 +26,6 @@
             fd
             rust
             wasmer
-            wapm-cli
           ];
 
           shellHook = ''

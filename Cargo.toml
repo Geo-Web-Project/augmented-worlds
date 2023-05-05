@@ -6,3 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ecs_rust = "0.0.4"
+wai-bindgen-rust = "0.2.3"
