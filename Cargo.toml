@@ -3,8 +3,10 @@ name = "wai-augmented-worlds"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib"]
 
 [dependencies]
 ecs_rust = "0.0.4"
-wai-bindgen-rust = "0.2.3"
+js-sys = "0.3.61"
+wasm-bindgen = "0.2.84"

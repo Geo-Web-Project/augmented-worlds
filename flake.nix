@@ -25,7 +25,7 @@
             exa
             fd
             rust
-            wasmer
+            wasm-pack
           ];
 
           shellHook = ''
