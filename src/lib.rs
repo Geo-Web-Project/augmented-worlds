@@ -1,8 +1,8 @@
 use wasm_bindgen::prelude::*;
 
+use crate::components::*;
 use ecs_rust::entity_manager::{EntityIdAccessor, EntityManager};
 use ecs_rust::world::World;
-use crate::components::*;
 
 mod components;
 
@@ -29,7 +29,7 @@ pub struct AwWorld {
 }
 
 impl ecs_rust::system::System for System {
-    fn update(&mut self, manager: &mut EntityManager, accessor: &mut EntityIdAccessor) {
+    fn update(&mut self, manager: &mut EntityManager, _accessor: &mut EntityIdAccessor) {
         // Passing Rust closures to JS, seems to be the simplest way
         let get_component =
             &mut |component_type: ComponentType, entity_id: usize| -> Option<Component> {
@@ -42,6 +42,9 @@ impl ecs_rust::system::System for System {
                         .map(|v| v.clone().into()),
                     ComponentType::Rotation => manager
                         .borrow_component::<Rotation>(entity_id)
+                        .map(|v| v.clone().into()),
+                    ComponentType::GLTFModel => manager
+                        .borrow_component::<GLTFModel>(entity_id)
                         .map(|v| v.clone().into()),
                 }
             };
@@ -61,6 +64,7 @@ impl AwWorld {
         world.register_component::<Position>();
         world.register_component::<Scale>();
         world.register_component::<Rotation>();
+        world.register_component::<GLTFModel>();
 
         AwWorld { ecs_world: world }
     }
@@ -98,6 +102,11 @@ impl AwWorld {
             ComponentType::Rotation => {
                 self.ecs_world
                     .add_component_to_entity(entity_id, Rotation::from(component));
+            }
+            // GLTFModel
+            ComponentType::GLTFModel => {
+                self.ecs_world
+                    .add_component_to_entity(entity_id, GLTFModel::from(component));
             }
         }
     }

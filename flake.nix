@@ -24,7 +24,9 @@
             pkg-config
             exa
             fd
+            cargo
             rust
+            rustfmt
             wasm-pack
           ];
 

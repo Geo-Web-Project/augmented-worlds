@@ -47,14 +47,25 @@ extern "C" {
     fn w(this: &Rotation) -> f32;
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Component)]
+    #[derive(Clone)]
+    pub type GLTFModel;
+    #[wasm_bindgen(method, getter)]
+    fn glTFModel(this: &GLTFModel) -> JsValue;
+}
+
 impl ecs_rust::component::Component for Component {}
 impl ecs_rust::component::Component for Position {}
 impl ecs_rust::component::Component for Scale {}
 impl ecs_rust::component::Component for Rotation {}
+impl ecs_rust::component::Component for GLTFModel {}
 
 #[wasm_bindgen]
 pub enum ComponentType {
     Position,
     Scale,
     Rotation,
+    GLTFModel,
 }
