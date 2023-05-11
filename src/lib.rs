@@ -2,7 +2,6 @@ use wasm_bindgen::prelude::*;
 
 use crate::components::*;
 use ecs_rust::entity_manager::{EntityIdAccessor, EntityManager};
-use ecs_rust::world::World;
 
 mod components;
 
@@ -12,7 +11,7 @@ extern "C" {
     fn log(s: &str);
 }
 
-#[wasm_bindgen(module = "system")]
+#[wasm_bindgen]
 extern "C" {
     pub type System;
 
@@ -24,8 +23,8 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub struct AwWorld {
-    ecs_world: World,
+pub struct World {
+    ecs_world: ecs_rust::world::World,
 }
 
 impl ecs_rust::system::System for System {
@@ -54,10 +53,10 @@ impl ecs_rust::system::System for System {
 }
 
 #[wasm_bindgen]
-impl AwWorld {
+impl World {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> AwWorld {
-        let mut world = World::new();
+    pub fn new() -> World {
+        let mut world = ecs_rust::world::World::new();
 
         // Register included components
         world.register_component::<Component>();
@@ -66,7 +65,7 @@ impl AwWorld {
         world.register_component::<Rotation>();
         world.register_component::<GLTFModel>();
 
-        AwWorld { ecs_world: world }
+        World { ecs_world: world }
     }
 
     pub fn create_entity(&mut self) -> usize {

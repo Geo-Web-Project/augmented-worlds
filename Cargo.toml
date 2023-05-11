@@ -1,5 +1,5 @@
 [package]
-name = "wasm-augmented-worlds"
+name = "augmented-worlds"
 version = "0.1.0"
 edition = "2021"
 

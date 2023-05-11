@@ -1,6 +1,7 @@
 /target
 /Cargo.lock
 pkg/
+node_modules
 
 .direnv
 .envrc
