@@ -39,8 +39,8 @@ impl ecs_rust::system::System for System {
                     ComponentType::Scale => manager
                         .borrow_component::<Scale>(entity_id)
                         .map(|v| v.clone().into()),
-                    ComponentType::Rotation => manager
-                        .borrow_component::<Rotation>(entity_id)
+                    ComponentType::Orientation => manager
+                        .borrow_component::<Orientation>(entity_id)
                         .map(|v| v.clone().into()),
                     ComponentType::GLTFModel => manager
                         .borrow_component::<GLTFModel>(entity_id)
@@ -62,7 +62,7 @@ impl World {
         world.register_component::<Component>();
         world.register_component::<Position>();
         world.register_component::<Scale>();
-        world.register_component::<Rotation>();
+        world.register_component::<Orientation>();
         world.register_component::<GLTFModel>();
 
         World { ecs_world: world }
@@ -98,9 +98,9 @@ impl World {
                     .add_component_to_entity(entity_id, Scale::from(component));
             }
             // Rotation
-            ComponentType::Rotation => {
+            ComponentType::Orientation => {
                 self.ecs_world
-                    .add_component_to_entity(entity_id, Rotation::from(component));
+                    .add_component_to_entity(entity_id, Orientation::from(component));
             }
             // GLTFModel
             ComponentType::GLTFModel => {

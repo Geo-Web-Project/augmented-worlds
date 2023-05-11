@@ -4,6 +4,26 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     #[derive(Clone)]
     pub type Component;
+
+    #[derive(Clone)]
+    pub type Vector;
+    #[wasm_bindgen(method, getter)]
+    fn x(this: &Vector) -> f32;
+    #[wasm_bindgen(method, getter)]
+    fn y(this: &Vector) -> f32;
+    #[wasm_bindgen(method, getter)]
+    fn z(this: &Vector) -> f32;
+
+    #[derive(Clone)]
+    pub type Quaternion;
+    #[wasm_bindgen(method, getter)]
+    fn x(this: &Quaternion) -> f32;
+    #[wasm_bindgen(method, getter)]
+    fn y(this: &Quaternion) -> f32;
+    #[wasm_bindgen(method, getter)]
+    fn z(this: &Quaternion) -> f32;
+    #[wasm_bindgen(method, getter)]
+    fn w(this: &Quaternion) -> f32;
 }
 
 #[wasm_bindgen]
@@ -12,11 +32,9 @@ extern "C" {
     #[derive(Clone)]
     pub type Position;
     #[wasm_bindgen(method, getter)]
-    fn x(this: &Position) -> f32;
+    fn startPosition(this: &Position) -> Vector;
     #[wasm_bindgen(method, getter)]
-    fn y(this: &Position) -> f32;
-    #[wasm_bindgen(method, getter)]
-    fn z(this: &Position) -> f32;
+    fn position(this: &Position) -> Vector;
 }
 
 #[wasm_bindgen]
@@ -25,26 +43,20 @@ extern "C" {
     #[derive(Clone)]
     pub type Scale;
     #[wasm_bindgen(method, getter)]
-    fn x(this: &Scale) -> f32;
+    fn startScale(this: &Scale) -> Vector;
     #[wasm_bindgen(method, getter)]
-    fn y(this: &Scale) -> f32;
-    #[wasm_bindgen(method, getter)]
-    fn z(this: &Scale) -> f32;
+    fn scale(this: &Scale) -> Vector;
 }
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Component)]
     #[derive(Clone)]
-    pub type Rotation;
+    pub type Orientation;
     #[wasm_bindgen(method, getter)]
-    fn x(this: &Rotation) -> f32;
+    fn startOrientation(this: &Orientation) -> Quaternion;
     #[wasm_bindgen(method, getter)]
-    fn y(this: &Rotation) -> f32;
-    #[wasm_bindgen(method, getter)]
-    fn z(this: &Rotation) -> f32;
-    #[wasm_bindgen(method, getter)]
-    fn w(this: &Rotation) -> f32;
+    fn orientation(this: &Orientation) -> Quaternion;
 }
 
 #[wasm_bindgen]
@@ -59,13 +71,13 @@ extern "C" {
 impl ecs_rust::component::Component for Component {}
 impl ecs_rust::component::Component for Position {}
 impl ecs_rust::component::Component for Scale {}
-impl ecs_rust::component::Component for Rotation {}
+impl ecs_rust::component::Component for Orientation {}
 impl ecs_rust::component::Component for GLTFModel {}
 
 #[wasm_bindgen]
 pub enum ComponentType {
     Position,
     Scale,
-    Rotation,
+    Orientation,
     GLTFModel,
 }
