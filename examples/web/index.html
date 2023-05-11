@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+</head>
+
+<body>
+    <!-- Note the usage of `type=module` here as this is an ES6 module -->
+    <script type="module">
+        // Use ES module import syntax to import functionality from the module
+        // that we have compiled.
+        //
+        // Note that the `default` import is an initialization function which
+        // will "boot" the module and make it ready to use. Currently browsers
+        // don't support natively imported WebAssembly as an ES module, but
+        // eventually the manual initialization won't be required!
+        import init, {AwWorld, ComponentType} from './node_modules/wasm-augmented-worlds/wasm_augmented_worlds.js';
+        await init();
+
+
+        const world = new AwWorld()
+
+        const e = world.create_entity()
+        world.add_component_to_entity(e, ComponentType.Position, {type: ComponentType.Position, x: 1, y: 2, z: 3})
+        world.add_component_to_entity(e, ComponentType.Scale, {type: ComponentType.Scale, x: 4, y: 5, z: 6})
+        world.add_component_to_entity(e, ComponentType.Rotation, {type: ComponentType.Rotation, x: 4, y: 5, z: 6, w: 0})
+        world.add_component_to_entity(e, ComponentType.GLTFModel, {type: ComponentType.GLTFModel, glTFModel: {"/": "QmdPXtkGThsWvR1YKg4QVSR9n8oHMPmpBEnyyV8Tk638o9"}})
+
+        class TestSystem {
+            update(get_component) {
+                console.log("Hello from TestSystem")
+                console.log(get_component(ComponentType.Position, e))
+                console.log(get_component(ComponentType.Scale, e))
+                console.log(get_component(ComponentType.Rotation, e))
+                console.log(get_component(ComponentType.GLTFModel, e))
+            }
+        }
+
+        world.add_system(new TestSystem())
+        world.update()
+    </script>
+</body>
+
+</html>

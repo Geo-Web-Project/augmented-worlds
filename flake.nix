@@ -10,7 +10,9 @@
   outputs = { self, nixpkgs, rust-overlay, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        overlays = [ (import rust-overlay) ];
+        overlays = [ (import rust-overlay) (final: prev: {
+              nodejs = prev.nodejs-14_x;
+        }) ];
         pkgs = import nixpkgs {
           inherit system overlays;
         };
@@ -20,6 +22,8 @@
       {
         devShells.default = mkShell {
           buildInputs = [
+            yarn
+            nodejs-14_x
             openssl
             pkg-config
             exa
