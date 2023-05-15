@@ -12,7 +12,10 @@ export interface System {
         getComponent: (
             componentType: ComponentType,
             entityId: number
-        ) => Component | undefined
+        ) => Component | undefined,
+        getComponents: (
+            componentType: ComponentType,
+        ) => Component[] | undefined
     ): void;
 }
 "#;
