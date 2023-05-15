@@ -32,6 +32,7 @@ extern "C" {
     fn update(
         this: &System,
         get_component: &mut dyn FnMut(ComponentType, usize) -> Option<Component>,
+        get_components: &mut dyn FnMut(ComponentType) -> Option<Vec<Component>>,
     );
 }
 
@@ -61,7 +62,24 @@ impl ecs_rust::system::System for System {
                 }
             };
 
-        System::update(self, get_component);
+        let get_components = &mut |component_type: ComponentType| -> Option<Vec<Component>> {
+            match component_type {
+                ComponentType::Position => manager
+                    .borrow_components::<Position>()
+                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
+                ComponentType::Scale => manager
+                    .borrow_components::<Scale>()
+                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
+                ComponentType::Orientation => manager
+                    .borrow_components::<Orientation>()
+                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
+                ComponentType::GLTFModel => manager
+                    .borrow_components::<GLTFModel>()
+                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
+            }
+        };
+
+        System::update(self, get_component, get_components);
     }
 }
 
