@@ -116,6 +116,7 @@ impl ecs_rust::component::Component for GLTFModel {}
 
 #[wasm_bindgen]
 pub enum ComponentType {
+    Component,
     Position,
     Scale,
     Orientation,

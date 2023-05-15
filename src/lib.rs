@@ -15,7 +15,7 @@ export interface System {
         ) => Component | undefined,
         getComponents: (
             componentType: ComponentType,
-        ) => Component[] | undefined
+        ) => number[] | undefined
     ): void;
 }
 "#;
@@ -35,7 +35,7 @@ extern "C" {
     fn update(
         this: &System,
         get_component: &mut dyn FnMut(ComponentType, usize) -> Option<Component>,
-        get_components: &mut dyn FnMut(ComponentType) -> Option<Vec<Component>>,
+        get_components: &mut dyn FnMut(ComponentType) -> Option<Vec<usize>>,
     );
 }
 
@@ -45,11 +45,14 @@ pub struct World {
 }
 
 impl ecs_rust::system::System for System {
-    fn update(&mut self, manager: &mut EntityManager, _accessor: &mut EntityIdAccessor) {
+    fn update(&mut self, manager: &mut EntityManager, accessor: &mut EntityIdAccessor) {
         // Passing Rust closures to JS, seems to be the simplest way
         let get_component =
             &mut |component_type: ComponentType, entity_id: usize| -> Option<Component> {
                 match component_type {
+                    ComponentType::Component => manager
+                        .borrow_component::<Component>(entity_id)
+                        .map(|v| v.clone()),
                     ComponentType::Position => manager
                         .borrow_component::<Position>(entity_id)
                         .map(|v| v.clone().into()),
@@ -65,20 +68,21 @@ impl ecs_rust::system::System for System {
                 }
             };
 
-        let get_components = &mut |component_type: ComponentType| -> Option<Vec<Component>> {
+        let get_components = &mut |component_type: ComponentType| -> Option<Vec<usize>> {
             match component_type {
-                ComponentType::Position => manager
-                    .borrow_components::<Position>()
-                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
-                ComponentType::Scale => manager
-                    .borrow_components::<Scale>()
-                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
-                ComponentType::Orientation => manager
-                    .borrow_components::<Orientation>()
-                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
-                ComponentType::GLTFModel => manager
-                    .borrow_components::<GLTFModel>()
-                    .map(|v| v.iter().map(|v| v.clone().into()).collect()),
+                ComponentType::Component => {
+                    accessor.borrow_ids::<Component>(manager).map(|v| v.clone())
+                }
+                ComponentType::Position => {
+                    accessor.borrow_ids::<Position>(manager).map(|v| v.clone())
+                }
+                ComponentType::Scale => accessor.borrow_ids::<Scale>(manager).map(|v| v.clone()),
+                ComponentType::Orientation => accessor
+                    .borrow_ids::<Orientation>(manager)
+                    .map(|v| v.clone()),
+                ComponentType::GLTFModel => {
+                    accessor.borrow_ids::<GLTFModel>(manager).map(|v| v.clone())
+                }
             }
         };
 
@@ -121,6 +125,11 @@ impl World {
         component: JsValue,
     ) {
         match component_type {
+            // Component
+            ComponentType::Component => {
+                self.ecs_world
+                    .add_component_to_entity(entity_id, Component::from(component));
+            }
             // Position
             ComponentType::Position => {
                 self.ecs_world
