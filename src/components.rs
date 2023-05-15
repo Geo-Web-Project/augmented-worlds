@@ -1,10 +1,49 @@
 use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen(typescript_custom_section)]
+const SYSTEM: &'static str = r#"
+export interface Component {}
+
+export type Vector = {
+    x: number;
+    y: number;
+    z: number;
+}
+
+export type Quaternion = {
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+}
+
+export interface Position extends Component {
+    startPosition: Vector;
+    position: Vector;
+}
+
+export interface Scale extends Component {
+    startScale: Vector;
+    scale: Vector;
+}
+
+export interface Orientation extends Component {
+    startOrientation: Quaternion;
+    orientation: Quaternion;
+}
+
+export interface GLTFModel extends Component {
+    glTFModel: any;
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "Component")]
     #[derive(Clone)]
     pub type Component;
 
+    #[wasm_bindgen(typescript_type = "Vector")]
     #[derive(Clone)]
     pub type Vector;
     #[wasm_bindgen(method, getter)]
@@ -14,6 +53,7 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     fn z(this: &Vector) -> f32;
 
+    #[wasm_bindgen(typescript_type = "Quaternion")]
     #[derive(Clone)]
     pub type Quaternion;
     #[wasm_bindgen(method, getter)]
@@ -28,7 +68,7 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Component)]
+    #[wasm_bindgen(extends = Component, typescript_type = "Position")]
     #[derive(Clone)]
     pub type Position;
     #[wasm_bindgen(method, getter)]
@@ -39,7 +79,7 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Component)]
+    #[wasm_bindgen(extends = Component, typescript_type = "Scale")]
     #[derive(Clone)]
     pub type Scale;
     #[wasm_bindgen(method, getter)]
@@ -50,7 +90,7 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Component)]
+    #[wasm_bindgen(extends = Component, typescript_type = "Orientation")]
     #[derive(Clone)]
     pub type Orientation;
     #[wasm_bindgen(method, getter)]
@@ -61,7 +101,7 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Component)]
+    #[wasm_bindgen(extends = Component, typescript_type = "GLTFModel")]
     #[derive(Clone)]
     pub type GLTFModel;
     #[wasm_bindgen(method, getter)]

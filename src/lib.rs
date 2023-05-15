@@ -5,6 +5,18 @@ use ecs_rust::entity_manager::{EntityIdAccessor, EntityManager};
 
 mod components;
 
+#[wasm_bindgen(typescript_custom_section)]
+const SYSTEM: &'static str = r#"
+export interface System {
+    update(
+        getComponent: (
+            componentType: ComponentType,
+            entityId: number
+        ) => Component | undefined
+    ): void;
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
@@ -13,6 +25,7 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "System")]
     pub type System;
 
     #[wasm_bindgen(method)]
