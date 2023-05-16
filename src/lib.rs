@@ -65,6 +65,12 @@ impl ecs_rust::system::System for System {
                     ComponentType::GLTFModel => manager
                         .borrow_component::<GLTFModel>(entity_id)
                         .map(|v| v.clone().into()),
+                    ComponentType::IsAnchor => manager
+                        .borrow_component::<IsAnchor>(entity_id)
+                        .map(|v| v.clone().into()),
+                    ComponentType::Anchor => manager
+                        .borrow_component::<Anchor>(entity_id)
+                        .map(|v| v.clone().into()),
                 }
             };
 
@@ -83,6 +89,10 @@ impl ecs_rust::system::System for System {
                 ComponentType::GLTFModel => {
                     accessor.borrow_ids::<GLTFModel>(manager).map(|v| v.clone())
                 }
+                ComponentType::IsAnchor => {
+                    accessor.borrow_ids::<IsAnchor>(manager).map(|v| v.clone())
+                }
+                ComponentType::Anchor => accessor.borrow_ids::<Anchor>(manager).map(|v| v.clone()),
             }
         };
 
@@ -149,6 +159,16 @@ impl World {
             ComponentType::GLTFModel => {
                 self.ecs_world
                     .add_component_to_entity(entity_id, GLTFModel::from(component));
+            }
+            // IsAnchor
+            ComponentType::IsAnchor => {
+                self.ecs_world
+                    .add_component_to_entity(entity_id, IsAnchor::from(component));
+            }
+            // Anchor
+            ComponentType::Anchor => {
+                self.ecs_world
+                    .add_component_to_entity(entity_id, Anchor::from(component));
             }
         }
     }

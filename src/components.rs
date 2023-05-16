@@ -17,6 +17,26 @@ export type Quaternion = {
     w: number;
 }
 
+export type VectorAnchor = {
+    x?: number;
+    y?: number;
+    z?: number;
+};
+
+export type QuaternionAnchor = {
+    x?: number;
+    y?: number;
+    z?: number;
+    w?: number;
+};
+
+export type Anchor = {
+    anchor?: number;
+    position?: number | VectorAnchor;
+    orientation?: number | QuaternionAnchor;
+    scale?: number | VectorAnchor;
+};
+
 export interface Position extends Component {
     startPosition: Vector;
     position: Vector;
@@ -34,6 +54,10 @@ export interface Orientation extends Component {
 
 export interface GLTFModel extends Component {
     glTFModel: any;
+}
+
+export interface IsAnchor extends Component {
+    isAnchor: boolean;
 }
 "#;
 
@@ -108,11 +132,37 @@ extern "C" {
     fn glTFModel(this: &GLTFModel) -> JsValue;
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Component, typescript_type = "IsAnchor")]
+    #[derive(Clone)]
+    pub type IsAnchor;
+    #[wasm_bindgen(method, getter)]
+    fn isAnchor(this: &IsAnchor) -> bool;
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Component, typescript_type = "Anchor")]
+    #[derive(Clone)]
+    pub type Anchor;
+    #[wasm_bindgen(method, getter)]
+    fn anchor(this: &Anchor) -> Option<usize>;
+    #[wasm_bindgen(method, getter)]
+    fn position(this: &Anchor) -> JsValue;
+    #[wasm_bindgen(method, getter)]
+    fn orientation(this: &Anchor) -> JsValue;
+    #[wasm_bindgen(method, getter)]
+    fn scale(this: &Anchor) -> JsValue;
+}
+
 impl ecs_rust::component::Component for Component {}
 impl ecs_rust::component::Component for Position {}
 impl ecs_rust::component::Component for Scale {}
 impl ecs_rust::component::Component for Orientation {}
 impl ecs_rust::component::Component for GLTFModel {}
+impl ecs_rust::component::Component for IsAnchor {}
+impl ecs_rust::component::Component for Anchor {}
 
 #[wasm_bindgen]
 pub enum ComponentType {
@@ -121,4 +171,6 @@ pub enum ComponentType {
     Scale,
     Orientation,
     GLTFModel,
+    IsAnchor,
+    Anchor,
 }
