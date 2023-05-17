@@ -112,6 +112,8 @@ impl World {
         world.register_component::<Scale>();
         world.register_component::<Orientation>();
         world.register_component::<GLTFModel>();
+        world.register_component::<IsAnchor>();
+        world.register_component::<Anchor>();
 
         World { ecs_world: world }
     }

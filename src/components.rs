@@ -34,7 +34,6 @@ export type Anchor = {
     anchor?: number;
     position?: number | VectorAnchor;
     orientation?: number | QuaternionAnchor;
-    scale?: number | VectorAnchor;
 };
 
 export interface Position extends Component {
@@ -152,8 +151,6 @@ extern "C" {
     fn position(this: &Anchor) -> JsValue;
     #[wasm_bindgen(method, getter)]
     fn orientation(this: &Anchor) -> JsValue;
-    #[wasm_bindgen(method, getter)]
-    fn scale(this: &Anchor) -> JsValue;
 }
 
 impl ecs_rust::component::Component for Component {}
