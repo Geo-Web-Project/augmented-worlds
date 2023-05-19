@@ -63,6 +63,11 @@ export interface TrackedImage extends Component {
     imageAsset: any;
     physicalWidthInMeters: number;
 }
+
+export interface CoachingOverlay extends Component {
+    trackedImages: any[];
+    text: string;
+}
 "#;
 
 #[wasm_bindgen]
@@ -169,6 +174,17 @@ extern "C" {
     fn physicalWidthInMeters(this: &TrackedImage) -> f32;
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Component, typescript_type = "CoachingOverlay")]
+    #[derive(Clone)]
+    pub type CoachingOverlay;
+    #[wasm_bindgen(method, getter)]
+    fn trackedImages(this: &CoachingOverlay) -> Vec<JsValue>;
+    #[wasm_bindgen(method, getter)]
+    fn text(this: &CoachingOverlay) -> String;
+}
+
 impl ecs_rust::component::Component for Component {}
 impl ecs_rust::component::Component for Position {}
 impl ecs_rust::component::Component for Scale {}
@@ -177,6 +193,7 @@ impl ecs_rust::component::Component for GLTFModel {}
 impl ecs_rust::component::Component for IsAnchor {}
 impl ecs_rust::component::Component for Anchor {}
 impl ecs_rust::component::Component for TrackedImage {}
+impl ecs_rust::component::Component for CoachingOverlay {}
 
 #[wasm_bindgen]
 pub enum ComponentType {
@@ -188,4 +205,5 @@ pub enum ComponentType {
     IsAnchor,
     Anchor,
     TrackedImage,
+    CoachingOverlay,
 }

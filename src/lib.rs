@@ -74,6 +74,9 @@ impl ecs_rust::system::System for System {
                     ComponentType::TrackedImage => manager
                         .borrow_component::<TrackedImage>(entity_id)
                         .map(|v| v.clone().into()),
+                    ComponentType::CoachingOverlay => manager
+                        .borrow_component::<CoachingOverlay>(entity_id)
+                        .map(|v| v.clone().into()),
                 }
             };
 
@@ -99,6 +102,9 @@ impl ecs_rust::system::System for System {
                 ComponentType::TrackedImage => accessor
                     .borrow_ids::<TrackedImage>(manager)
                     .map(|v| v.clone()),
+                ComponentType::CoachingOverlay => accessor
+                    .borrow_ids::<CoachingOverlay>(manager)
+                    .map(|v| v.clone()),
             }
         };
 
@@ -121,6 +127,7 @@ impl World {
         world.register_component::<IsAnchor>();
         world.register_component::<Anchor>();
         world.register_component::<TrackedImage>();
+        world.register_component::<CoachingOverlay>();
 
         World { ecs_world: world }
     }
@@ -183,6 +190,11 @@ impl World {
             ComponentType::TrackedImage => {
                 self.ecs_world
                     .add_component_to_entity(entity_id, TrackedImage::from(component));
+            }
+            // CoachingOverlay
+            ComponentType::CoachingOverlay => {
+                self.ecs_world
+                    .add_component_to_entity(entity_id, CoachingOverlay::from(component));
             }
         }
     }
