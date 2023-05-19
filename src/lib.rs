@@ -71,6 +71,9 @@ impl ecs_rust::system::System for System {
                     ComponentType::Anchor => manager
                         .borrow_component::<Anchor>(entity_id)
                         .map(|v| v.clone().into()),
+                    ComponentType::TrackedImage => manager
+                        .borrow_component::<TrackedImage>(entity_id)
+                        .map(|v| v.clone().into()),
                 }
             };
 
@@ -93,6 +96,9 @@ impl ecs_rust::system::System for System {
                     accessor.borrow_ids::<IsAnchor>(manager).map(|v| v.clone())
                 }
                 ComponentType::Anchor => accessor.borrow_ids::<Anchor>(manager).map(|v| v.clone()),
+                ComponentType::TrackedImage => accessor
+                    .borrow_ids::<TrackedImage>(manager)
+                    .map(|v| v.clone()),
             }
         };
 
@@ -114,6 +120,7 @@ impl World {
         world.register_component::<GLTFModel>();
         world.register_component::<IsAnchor>();
         world.register_component::<Anchor>();
+        world.register_component::<TrackedImage>();
 
         World { ecs_world: world }
     }
@@ -171,6 +178,11 @@ impl World {
             ComponentType::Anchor => {
                 self.ecs_world
                     .add_component_to_entity(entity_id, Anchor::from(component));
+            }
+            // TrackedImage
+            ComponentType::TrackedImage => {
+                self.ecs_world
+                    .add_component_to_entity(entity_id, TrackedImage::from(component));
             }
         }
     }

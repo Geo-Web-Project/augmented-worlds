@@ -37,18 +37,18 @@ export type Anchor = {
 };
 
 export interface Position extends Component {
-    startPosition: Vector;
-    position: Vector;
+    startPosition?: Vector;
+    position?: Vector;
 }
 
 export interface Scale extends Component {
-    startScale: Vector;
-    scale: Vector;
+    startScale?: Vector;
+    scale?: Vector;
 }
 
 export interface Orientation extends Component {
-    startOrientation: Quaternion;
-    orientation: Quaternion;
+    startOrientation?: Quaternion;
+    orientation?: Quaternion;
 }
 
 export interface GLTFModel extends Component {
@@ -57,6 +57,11 @@ export interface GLTFModel extends Component {
 
 export interface IsAnchor extends Component {
     isAnchor: boolean;
+}
+
+export interface TrackedImage extends Component {
+    imageAsset: any;
+    physicalWidthInMeters: number;
 }
 "#;
 
@@ -153,6 +158,17 @@ extern "C" {
     fn orientation(this: &Anchor) -> JsValue;
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Component, typescript_type = "TrackedImage")]
+    #[derive(Clone)]
+    pub type TrackedImage;
+    #[wasm_bindgen(method, getter)]
+    fn imageAsset(this: &TrackedImage) -> JsValue;
+    #[wasm_bindgen(method, getter)]
+    fn physicalWidthInMeters(this: &TrackedImage) -> f32;
+}
+
 impl ecs_rust::component::Component for Component {}
 impl ecs_rust::component::Component for Position {}
 impl ecs_rust::component::Component for Scale {}
@@ -160,6 +176,7 @@ impl ecs_rust::component::Component for Orientation {}
 impl ecs_rust::component::Component for GLTFModel {}
 impl ecs_rust::component::Component for IsAnchor {}
 impl ecs_rust::component::Component for Anchor {}
+impl ecs_rust::component::Component for TrackedImage {}
 
 #[wasm_bindgen]
 pub enum ComponentType {
@@ -170,4 +187,5 @@ pub enum ComponentType {
     GLTFModel,
     IsAnchor,
     Anchor,
+    TrackedImage,
 }
